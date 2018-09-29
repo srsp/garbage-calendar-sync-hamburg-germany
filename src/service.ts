@@ -58,6 +58,8 @@ class GarbageService {
         this.compareEvents);
       //only take events, created by this service account (do not delete other events)
       deletedEvents = <GoogleCalendarEvent[]> _.filter(deletedEvents, {creator: {email: this.clientEmail}});
+      //only take events, that are in the future
+      deletedEvents = <GoogleCalendarEvent[]> _.filter(deletedEvents, (event: GoogleCalendarEvent) => moment(event.start.dateTime).isAfter());
       console.log(`┃  ┗━ Found ${deletedEvents.length} deleted events.`);
 
       console.log(`┣━ Starting insertion of missing events...`);

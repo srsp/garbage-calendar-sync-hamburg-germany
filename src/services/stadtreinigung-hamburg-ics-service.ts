@@ -9,7 +9,7 @@ export class StadtreinigungHamburgIcsService {
   private icsUrl: string;
 
   constructor(private asId: string, private hnId: string, private address: string) {
-    this.icsUrl = `http://www.stadtreinigung.hamburg/privatkunden/abfuhrkalender/Abfuhrtermin.ics?asId=${asId}&hnId=${hnId}&adresse=${address.replace(/\s/g, '%20')}`;
+    this.icsUrl = `http://www.stadtreinigung.hamburg/privatkunden/abfuhrkalender/Abfuhrtermin.ics?asId=${asId}&hnId=${hnId}&adresse=${address.replace(/\s/g, '')}`;
   }
 
   public async getUpcomingEvents(): Promise<GoogleCalendarEvent[]> {
