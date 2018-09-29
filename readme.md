@@ -5,8 +5,8 @@ You can also subscribe to an email reminder service as well as download all date
 
 However, both options aren't perfect:
 * The email service spams your inbox.
-* The ICS-Calendar file download requires manual effort and doesn't capture short-term changes.
-Also, the events are dated to the day before collection at 17:00 which is the reminder date - not the actual collection date.
+* The ICS-Calendar file opiton requires a manual download at least every 6 months and doesn't capture short-term changes.
+* Also, all events are dated to the day before collection at 17:00 which is the reminder date - not the actual collection date.
 
 ## What does this service do?
 
