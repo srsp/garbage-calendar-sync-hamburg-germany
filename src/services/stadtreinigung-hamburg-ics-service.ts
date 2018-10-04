@@ -9,7 +9,7 @@ export class StadtreinigungHamburgIcsService {
   private icsUrl: string;
   private defaultColorId: string;
 
-  constructor(private asId: string, private hnId: string, private address: string, private colorId: string) {
+  constructor(private hnId: string, private asId: string, private address: string, private colorId: string) {
     this.icsUrl = `http://www.stadtreinigung.hamburg/privatkunden/abfuhrkalender/Abfuhrtermin.ics?asId=${asId}&hnId=${hnId}&adresse=${address.replace(/\s/g, '')}`;
     this.defaultColorId = colorId;
   }
@@ -26,6 +26,7 @@ export class StadtreinigungHamburgIcsService {
   }
 
   private async downloadIcs(): Promise<string> {
+    console.log(`┣━ Downloading events from ${this.icsUrl}.`);
     return request.get(this.icsUrl);
   }
 
