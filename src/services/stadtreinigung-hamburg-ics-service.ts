@@ -7,9 +7,11 @@ import * as _ from 'lodash';
 
 export class StadtreinigungHamburgIcsService {
   private icsUrl: string;
+  private defaultColorId: string;
 
-  constructor(private asId: string, private hnId: string, private address: string) {
+  constructor(private asId: string, private hnId: string, private address: string, private colorId: string) {
     this.icsUrl = `http://www.stadtreinigung.hamburg/privatkunden/abfuhrkalender/Abfuhrtermin.ics?asId=${asId}&hnId=${hnId}&adresse=${address.replace(/\s/g, '')}`;
+    this.defaultColorId = colorId;
   }
 
   public async getUpcomingEvents(): Promise<GoogleCalendarEvent[]> {
@@ -50,22 +52,28 @@ export class StadtreinigungHamburgIcsService {
       .trim();
 
     let colorId: string;
-    switch (title) {
-      case 'Gelbe Tonne':
-        colorId = '5'; //yellow
-        break;
-      case 'Papiermüll':
-        colorId = '7'; //blue
-        break;
-      case 'Restmüll':
-        colorId = '8'; //graphit
-        break;
-      case 'Biomüll':
-        colorId = '2'; //green
-        break;
-      default:
-        colorId = undefined; //default color
-        break;
+
+    if (this.defaultColorId == null) {
+
+        switch (title) {
+            case 'Gelbe Tonne':
+                colorId = '5'; //yellow
+                break;
+            case 'Papiermüll':
+                colorId = '7'; //blue
+                break;
+            case 'Restmüll':
+                colorId = '8'; //graphit
+                break;
+            case 'Biomüll':
+                colorId = '2'; //green
+                break;
+            default:
+                colorId = undefined; //default color
+                break;
+        }
+    } else {
+      colorId = this.defaultColorId;
     }
 
     const start: Moment = moment(data[7][3]).add(12, 'hours');

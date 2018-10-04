@@ -39,6 +39,7 @@ You need a technical user that you will give access to your private calendar.
 3. Go to calendar settings
 4. Share calendar with the client email from the `config.json` (read and write access)
 5. Copy the calendar ID (`something@group.calendar.google.com`) and paste it into the `./config.json` file.
+6. If you want each garbage entry with the corresponding color, remove the `"defaultCalendarEventColorId": "8"`. Otherwise all garbage entries will be in graphite.
 
 ### Configure your notifications
 1. Under notifications, add your preferred notification method and time. I use "popup" and "13h before".

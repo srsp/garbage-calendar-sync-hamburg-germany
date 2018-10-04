@@ -15,13 +15,14 @@ class GarbageService {
   privateKey: string = config.privateKey;
   clientEmail: string = config.clientEmail;
   calendarId: string = config.calendarId;
+  defaultCalendarEventColorId: string = config.defaultCalendarEventColorId;
 
   private googleCalendar: GoogleCalendar;
   private stadtReinigungHamburgIcsService: StadtreinigungHamburgIcsService;
 
   constructor() {
     this.googleCalendar = new GoogleCalendar(this.privateKey, this.clientEmail, this.calendarId);
-    this.stadtReinigungHamburgIcsService = new StadtreinigungHamburgIcsService(this.hnId, this.asId, this.address);
+    this.stadtReinigungHamburgIcsService = new StadtreinigungHamburgIcsService(this.hnId, this.asId, this.address, this.defaultCalendarEventColorId);
 
     //one time at startup time
     this.synchronizeCalendars();

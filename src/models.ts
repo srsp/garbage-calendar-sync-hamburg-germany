@@ -195,4 +195,5 @@ export interface Config {
   privateKey: string;
   clientEmail: string;
   calendarId: string;
+  defaultCalendarEventColorId: string;
 }
