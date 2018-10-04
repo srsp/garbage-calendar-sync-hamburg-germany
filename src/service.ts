@@ -16,13 +16,14 @@ class GarbageService {
   clientEmail: string = config.clientEmail;
   calendarId: string = config.calendarId;
   defaultCalendarEventColorId: string = config.defaultCalendarEventColorId;
+  calendarEntryWholeDay: boolean = config.calendarEntryWholeDay;
 
   private googleCalendar: GoogleCalendar;
   private stadtReinigungHamburgIcsService: StadtreinigungHamburgIcsService;
 
   constructor() {
     this.googleCalendar = new GoogleCalendar(this.privateKey, this.clientEmail, this.calendarId);
-    this.stadtReinigungHamburgIcsService = new StadtreinigungHamburgIcsService(this.hnId, this.asId, this.address, this.defaultCalendarEventColorId);
+    this.stadtReinigungHamburgIcsService = new StadtreinigungHamburgIcsService(this.hnId, this.asId, this.address, this.defaultCalendarEventColorId, this.calendarEntryWholeDay);
 
     //one time at startup time
     this.synchronizeCalendars();
@@ -60,20 +61,20 @@ class GarbageService {
       //only take events, created by this service account (do not delete other events)
       deletedEvents = <GoogleCalendarEvent[]> _.filter(deletedEvents, {creator: {email: this.clientEmail}});
       //only take events, that are in the future
-      deletedEvents = <GoogleCalendarEvent[]> _.filter(deletedEvents, (event: GoogleCalendarEvent) => moment(event.start.dateTime).isAfter());
+      deletedEvents = <GoogleCalendarEvent[]> _.filter(deletedEvents, (event: GoogleCalendarEvent) =>  (event.start.date != null && moment(event.start.date).isAfter()) || (event.start.dateTime != null && moment(event.start.dateTime).isAfter()));
       console.log(`┃  ┗━ Found ${deletedEvents.length} deleted events.`);
 
       console.log(`┣━ Starting insertion of missing events...`);
       for (const missingEvent of missingEvents) {
         await this.googleCalendar.insertEvent(missingEvent);
-        console.log(`┃  ┣━ Inserted ${missingEvent.summary} at ${moment(missingEvent.start.dateTime).format('YYYY-DD-MM')}.`);
+        console.log(`┃  ┣━ Inserted ${missingEvent.summary} at ${missingEvent.start.date == null ? moment(missingEvent.start.dateTime).format('YYYY-MM-DD') : missingEvent.start.date}.`);
       }
       console.log(`┃  ┗━ Done.`);
 
       console.log(`┣━ Starting deletion of deleted events...`);
       for (const deletedEvent of deletedEvents) {
         await this.googleCalendar.deleteEvent(deletedEvent);
-        console.log(`┃  ┣━ Deleted ${deletedEvent.summary} at ${moment(deletedEvent.start.dateTime).format('YYYY-DD-MM')}.`);
+        console.log(`┃  ┣━ Deleted ${deletedEvent.summary} at ${deletedEvent.start.date == null ? moment(deletedEvent.start.dateTime).format('YYYY-MM-DD') : deletedEvent.start.date}.`);
       }
       console.log(`┃  ┗━ Done.`);
       console.log(`┗━ Done. Going back to sleep...`);
