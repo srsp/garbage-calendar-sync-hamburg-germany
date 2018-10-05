@@ -10,7 +10,7 @@ export class StadtreinigungHamburgIcsService {
   private hnId: string;
   private asId: string;
 
-  constructor(private street: string, private houseNumber: string, private disableColors: boolean) {
+  constructor(private street: string, private houseNumber: string, private disableColors: boolean, private calendarEntryWholeDay: boolean) {
   }
 
   public async getUpcomingEvents(): Promise<GoogleCalendarEvent[]> {
@@ -20,7 +20,7 @@ export class StadtreinigungHamburgIcsService {
 
     return _.filter(
       eventsFromIcs,
-      (event: GoogleCalendarEvent) => moment(event.start.dateTime).isAfter(tomorrow)
+      (event: GoogleCalendarEvent) => moment(event.start.dateTime).isAfter(tomorrow) || moment(event.start.date).isAfter(tomorrow)
     );
   }
 
@@ -76,27 +76,24 @@ export class StadtreinigungHamburgIcsService {
       .replace('gelbe', '')
       .replace('grüne', '')
       .replace('blaue', '')
-      .replace('(falls Sie welche gekauft haben)', '(optional)')
-      .replace('Hamburger Wertstofftonne bzw. gelber Hamburger Wertstoffsack', 'Gelbe Tonne')
-      .replace('Papiertonne', 'Papiermüll')
-      .replace('Restmülltonne', 'Restmüll')
-      .replace('Biotonne', 'Biomüll')
+      .replace('(falls Sie welche gekauft haben)', '')
+      .replace('Hamburger Wertstofftonne bzw. gelber Hamburger Wertstoffsack', 'Wertstofftonne')
       .trim();
 
     let colorId: string;
 
     if (!this.disableColors) {
         switch (title) {
-            case 'Gelbe Tonne':
+            case 'Wertstofftonne':
                 colorId = '5'; //yellow
                 break;
-            case 'Papiermüll':
+            case 'Papiertonne':
                 colorId = '7'; //blue
                 break;
-            case 'Restmüll':
+            case 'Restmülltonne':
                 colorId = '8'; //graphit
                 break;
-            case 'Biomüll':
+            case 'Biotonne':
                 colorId = '2'; //green
                 break;
             default:
@@ -105,10 +102,11 @@ export class StadtreinigungHamburgIcsService {
         }
     }
 
-    const start: Moment = moment(data[7][3]).add(12, 'hours');
-    const end: Moment = moment(start).add(2, 'hours');
+    const startDate: Moment = this.wholeDay ? moment(data[7][3]).add(12, 'hours') : undefined;
+    const startDateTime: Moment = this.wholeDay ? undefined : moment(data[7][3]).add(12, 'hours');
+    const endDate: Moment = this.wholeDay ? moment(startDate).add(2, 'hours') : undefined;
+    const endDateTime: Moment = this.wholeDay ? undefined : moment(startDate).add(2, 'hours');
 
-    console.log(data[4][3]);
     return {
       kind: 'calendar#event',
       created: new Date(),
@@ -116,8 +114,14 @@ export class StadtreinigungHamburgIcsService {
       colorId: colorId,
       summary: title,
       description: data[4][3],
-      start: {dateTime: start.toDate()},
-      end: {dateTime: end.toDate()},
+      start: {
+          date: startDate.format('YYYY-MM-DD'),
+          dateTime: startDateTime == null ? undefined : startDateTime.toDate()
+      },
+      end: {
+          date: endDate.format('YYYY-MM-DD'),
+          dateTime: endDateTime == null ? undefined : endDateTime.toDate()
+      },
       reminders: {
         useDefault: true
       }

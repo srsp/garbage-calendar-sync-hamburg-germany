@@ -9,8 +9,14 @@ export interface GoogleCalendarEvent {
   updated: Date;
   description: string;
   summary: string;
-  start: { dateTime: Date };
-  end: { dateTime: Date };
+  start: {
+    date: string,
+    dateTime: Date
+  };
+  end: {
+    date: string,
+    dateTime: Date
+  };
   reminders: {
     useDefault: boolean,
     overrides?: GoogleCalendarEventReminder[]
@@ -194,5 +200,6 @@ export interface Config {
   privateKey: string;
   clientEmail: string;
   calendarId: string;
+  calendarEntryWholeDay: boolean;
   disableColors: boolean;
 }

@@ -42,7 +42,7 @@ export class GoogleCalendar {
       this.calendar.events.list({
         calendarId: this.calendarId,
         timeMin: moment().add(24, 'hours').toISOString(),
-        maxResults: 100, //usually about 60 events per half a year
+        maxResults: 200, //usually about 60 events per half a year
         singleEvents: true,
         orderBy: 'startTime'
       }, (err: any, res: any) => {
