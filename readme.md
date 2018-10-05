@@ -45,18 +45,17 @@ You need a technical user that you will give access to your private calendar.
 1. Under notifications, add your preferred notification method and time. I use "popup" and "13h before".
 Which is 17:00 the day before as notification on my mobile phone.
 
-### Get the Stadtreinigung Hamburg Calendar URL
-1. Go to https://www.stadtreinigung.hamburg/privatkunden/abfuhrkalender/index.html
-2. Enter your address
-3. Click "Abfuhrtermine suchen"
-4. Open the developer tools and inspect the button "Download als ICS Termine für die nächsten 6 Monate"
-5. Next to it in the DOM inspector, you'll find the `asId` and the `hnId` as hidden inputs.
-6. Copy and paste both values into the `config.json` file. Also enter your address.
+### Configure your address
+*  Set your street name and your house number in `config.json`.
+This has to match the data from Stadtreinigung Hamburg. You can verify it
+[here](https://www.stadtreinigung.hamburg/privatkunden/abfuhrkalender/index.html)
 
-### Configure Sync frequency
-Stadtreinigung Hamburg states that they'll update the collection events every 4 weeks.
+### Other Configurations
+* *Sync Frequency* Stadtreinigung Hamburg states that they'll update the collection events every 4 weeks.
 I suggest synchronizing the the garbage calendar at least once a week. My cron expression is:
 `"0 0 0 * * Mon"` which is every Monday at 00:00. You can find more information on cron scheduling at [here](https://crontab.guru/).
+* *Colors* You can disable the different colors for each garbage collection event by setting `disableColors` to `true`.
+Events will then have the default calendar color.
 
 ## Run
 
