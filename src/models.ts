@@ -21,7 +21,6 @@ export interface GoogleCalendarEvent {
     useDefault: boolean,
     overrides?: GoogleCalendarEventReminder[]
   };
-  wholeDay: boolean;
 }
 
 export interface GoogleCalendarEventReminder {
@@ -195,13 +194,12 @@ export interface GooglePrivateKey {
 }
 
 export interface Config {
-  address: string;
-  asId: string;
-  hnId: string;
+  street: string;
+  houseNumber: string;
   cron: string;
   privateKey: string;
   clientEmail: string;
   calendarId: string;
-  defaultCalendarEventColorId: string;
   calendarEntryWholeDay: boolean;
+  disableColors: boolean;
 }

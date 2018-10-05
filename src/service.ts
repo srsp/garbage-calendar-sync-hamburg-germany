@@ -8,28 +8,18 @@ import moment = require('moment');
 const config: Config = require('../config.json');
 
 class GarbageService {
-  cron: string = config.cron;
-  hnId: string = config.hnId;
-  asId: string = config.asId;
-  address: string = config.address;
-  privateKey: string = config.privateKey;
-  clientEmail: string = config.clientEmail;
-  calendarId: string = config.calendarId;
-  defaultCalendarEventColorId: string = config.defaultCalendarEventColorId;
-  calendarEntryWholeDay: boolean = config.calendarEntryWholeDay;
-
   private googleCalendar: GoogleCalendar;
   private stadtReinigungHamburgIcsService: StadtreinigungHamburgIcsService;
 
   constructor() {
-    this.googleCalendar = new GoogleCalendar(this.privateKey, this.clientEmail, this.calendarId);
-    this.stadtReinigungHamburgIcsService = new StadtreinigungHamburgIcsService(this.hnId, this.asId, this.address, this.defaultCalendarEventColorId, this.calendarEntryWholeDay);
+    this.googleCalendar = new GoogleCalendar(config.privateKey, config.clientEmail, config.calendarId);
+    this.stadtReinigungHamburgIcsService = new StadtreinigungHamburgIcsService(config.street, config.houseNumber, config.disableColors, this.calendarEntryWholeDay);
 
     //one time at startup time
     this.synchronizeCalendars();
 
     //as cron job
-    new CronJob(this.cron, () => this.synchronizeCalendars(), null, true, 'Europe/Berlin');
+    new CronJob(config.cron, () => this.synchronizeCalendars(), null, true, 'Europe/Berlin');
   }
 
   private async synchronizeCalendars() {
@@ -59,9 +49,7 @@ class GarbageService {
         upcomingEventsFromIcs,
         this.compareEvents);
       //only take events, created by this service account (do not delete other events)
-      deletedEvents = <GoogleCalendarEvent[]> _.filter(deletedEvents, {creator: {email: this.clientEmail}});
-      //only take events, that are in the future
-      deletedEvents = <GoogleCalendarEvent[]> _.filter(deletedEvents, (event: GoogleCalendarEvent) =>  (event.start.date != null && moment(event.start.date).isAfter()) || (event.start.dateTime != null && moment(event.start.dateTime).isAfter()));
+      deletedEvents = <GoogleCalendarEvent[]> _.filter(deletedEvents, {creator: {email: config.clientEmail}});
       console.log(`┃  ┗━ Found ${deletedEvents.length} deleted events.`);
 
       console.log(`┣━ Starting insertion of missing events...`);

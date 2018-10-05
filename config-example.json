@@ -1,11 +1,10 @@
 {
   "cron": "0 0 0 * * Mon",
-  "hnId": "123456",
-  "asId": "123",
-  "address": "Hauptstraße 1",
+  "street": "Hauptstraße",
+  "houseNumber": "1a",
   "privateKey": "-----BEGIN PRIVATE KEY-----\nabcdefghijklmnopqrstuvwxyz1234567890==\n-----END PRIVATE KEY-----\n",
   "clientEmail": "servicename@projectname.iam.gserviceaccount.com",
   "calendarId": "abcdefghijklmnopqrstuvxyz@group.calendar.google.com",
-  "defaultCalendarEventColorId": "8",
   "calendarEntryWholeDay": false
+  "disableColors": false
 }
