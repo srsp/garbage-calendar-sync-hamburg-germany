@@ -1,7 +1,9 @@
 /**
  * https://developers.google.com/calendar/v3/reference/events
  */
-export interface GoogleCalendarEvent {
+import moment = require('moment');
+
+export class GoogleCalendarEventJson {
   id?: any;
   kind: string;
   colorId?: string;
@@ -10,17 +12,44 @@ export interface GoogleCalendarEvent {
   description: string;
   summary: string;
   start: {
-    date: string,
-    dateTime: Date
+    date?: string;
+    dateTime?: Date;
   };
   end: {
-    date: string,
-    dateTime: Date
+    date?: string;
+    dateTime?: Date;
   };
   reminders: {
     useDefault: boolean,
     overrides?: GoogleCalendarEventReminder[]
   };
+}
+
+export class GoogleCalendarEvent extends GoogleCalendarEventJson {
+
+  getStart() {
+    return this.start.dateTime || this.start.date;
+  }
+
+  getEnd() {
+    return this.end.dateTime || this.end.date;
+  }
+
+  static fromJson(json: GoogleCalendarEventJson): GoogleCalendarEvent {
+    const event = new GoogleCalendarEvent();
+    event.id = json.id;
+    event.kind = json.kind;
+    event.colorId = json.colorId;
+    event.created = json.created;
+    event.updated = json.updated;
+    event.description = json.description;
+    event.summary = json.summary;
+    event.start = json.start;
+    event.end = json.end;
+    event.reminders = json.reminders;
+    return event;
+  }
+
 }
 
 export interface GoogleCalendarEventReminder {
