@@ -30,9 +30,10 @@ export class StadtreinigungHamburgIcsService {
       [this.hnId, this.asId] = await this.loadHnAsIds();
       console.log(`┣━ HN-ID: ${this.hnId}`);
       console.log(`┣━ AS-ID: ${this.asId}`);
+      console.log(`┣━ Address: ${this.street} ${this.houseNumber}`);
 
       if (!this.hnId || !this.asId) {
-        throw new Error('hnId or asID not found. Please check your address and house number.');
+        throw new Error('hnId or asID not found. Please check your address and house number or set it in the config.json.');
       }
     }
     this.icsUrl = `http://www.stadtreinigung.hamburg/privatkunden/abfuhrkalender/Abfuhrtermin.ics?asId=${this.asId}&hnId=${this.hnId}&adresse=${this.street}+${this.houseNumber}`;
