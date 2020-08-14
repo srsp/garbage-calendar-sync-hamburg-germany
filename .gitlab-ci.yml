@@ -1,0 +1,13 @@
+
+stages:
+    - deploy
+
+sync:
+    stage: deploy
+    tags: 
+        - docker
+    image: $IMAGE
+    script:
+        - cp $CONFIG_JSON config.json
+        - npm start
+    
