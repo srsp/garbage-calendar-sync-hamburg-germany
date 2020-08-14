@@ -11,7 +11,7 @@ export class StadtreinigungHamburgIcsService {
   private hnId: string;
   private asId: string;
 
-  constructor(private street: string, private houseNumber: string, private disableColors: boolean, private wholeDay: boolean) {
+  constructor(private street: string, private houseNumber: string, private disableColors: boolean, private wholeDay: boolean, private asIdFromConfig: string, private hnIdFromConfig: string) {
   }
 
   public async getUpcomingEvents(): Promise<GoogleCalendarEvent[]> {
@@ -59,12 +59,17 @@ export class StadtreinigungHamburgIcsService {
         mode: 'search'
       }
     });
+    try {
     //search for: <input type="hidden" name="asId" value="122" />
     // 						<input type="hidden" name="hnId" value="322222" />
     const hnId = webpage.match(/<input type="hidden" name="hnId" value="([0-9]+)" \/>/)[1];
     const asId = webpage.match(/<input type="hidden" name="asId" value="([0-9]+)" \/>/)[1];
-
     return [hnId, asId];
+    } catch {
+      console.log(`┣━ Failed to find IDs, using values from config...`);
+      return [this.hnIdFromConfig, this.asIdFromConfig]
+    }
+
   }
 
   private parseEvent([eventType, data]: [string, any[]]): GoogleCalendarEvent {

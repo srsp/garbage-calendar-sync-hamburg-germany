@@ -13,13 +13,15 @@ class GarbageService {
 
   constructor() {
     this.googleCalendar = new GoogleCalendar(config.privateKey, config.clientEmail, config.calendarId);
-    this.stadtReinigungHamburgIcsService = new StadtreinigungHamburgIcsService(config.street, config.houseNumber, config.disableColors, config.calendarEntryWholeDay);
+    this.stadtReinigungHamburgIcsService = new StadtreinigungHamburgIcsService(config.street, config.houseNumber, config.disableColors, config.calendarEntryWholeDay, config.asId, config.hnId);
 
     //one time at startup time
     this.synchronizeCalendars();
 
     //as cron job
-    new CronJob(config.cron, () => this.synchronizeCalendars(), null, true, 'Europe/Berlin');
+    if (config.enableCron === true) {
+      new CronJob(config.cron, () => this.synchronizeCalendars(), null, true, 'Europe/Berlin');
+    }
   }
 
   private async synchronizeCalendars() {

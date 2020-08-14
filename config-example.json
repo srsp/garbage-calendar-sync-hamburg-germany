@@ -1,4 +1,5 @@
 {
+  "enableCron": true,
   "cron": "0 0 0 * * Mon",
   "street": "Hauptstraße",
   "houseNumber": "1a",

@@ -225,10 +225,13 @@ export interface GooglePrivateKey {
 export interface Config {
   street: string;
   houseNumber: string;
+  enableCron: boolean;
   cron: string;
   privateKey: string;
   clientEmail: string;
   calendarId: string;
   calendarEntryWholeDay: boolean;
   disableColors: boolean;
+  asId: string;
+  hnId: string;
 }
