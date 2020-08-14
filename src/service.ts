@@ -13,7 +13,7 @@ class GarbageService {
 
   constructor() {
     this.googleCalendar = new GoogleCalendar(config.privateKey, config.clientEmail, config.calendarId);
-    this.stadtReinigungHamburgIcsService = new StadtreinigungHamburgIcsService(config.street, config.houseNumber, config.disableColors, this.calendarEntryWholeDay);
+    this.stadtReinigungHamburgIcsService = new StadtreinigungHamburgIcsService(config.street, config.houseNumber, config.disableColors, config.calendarEntryWholeDay);
 
     //one time at startup time
     this.synchronizeCalendars();
@@ -55,14 +55,14 @@ class GarbageService {
       console.log(`┣━ Starting insertion of missing events...`);
       for (const missingEvent of missingEvents) {
         await this.googleCalendar.insertEvent(missingEvent);
-        console.log(`┃  ┣━ Inserted ${missingEvent.summary} at ${missingEvent.start.date == null ? moment(missingEvent.start.dateTime).format('YYYY-MM-DD') : missingEvent.start.date}.`);
+        console.log(`┃  ┣━ Inserted ${missingEvent.summary} at ${moment(missingEvent.getStart()).format('YYYY-MM-DD')}.`);
       }
       console.log(`┃  ┗━ Done.`);
 
       console.log(`┣━ Starting deletion of deleted events...`);
       for (const deletedEvent of deletedEvents) {
         await this.googleCalendar.deleteEvent(deletedEvent);
-        console.log(`┃  ┣━ Deleted ${deletedEvent.summary} at ${deletedEvent.start.date == null ? moment(deletedEvent.start.dateTime).format('YYYY-MM-DD') : deletedEvent.start.date}.`);
+        console.log(`┃  ┣━ Deleted ${deletedEvent.summary} at ${moment(deletedEvent.getStart()).format('YYYY-MM-DD')}.`);
       }
       console.log(`┃  ┗━ Done.`);
       console.log(`┗━ Done. Going back to sleep...`);

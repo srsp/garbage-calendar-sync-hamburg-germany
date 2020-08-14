@@ -1,4 +1,4 @@
-import { GoogleCalendarEvent, GooglePrivateKey } from '../models';
+import { GoogleCalendarEvent, GoogleCalendarEventJson, GooglePrivateKey } from '../models';
 import { GoogleApis } from 'googleapis';
 import { JWT } from 'google-auth-library';
 import moment = require('moment');
@@ -49,7 +49,8 @@ export class GoogleCalendar {
         if (err) {
           reject(err);
         } else {
-          resolve(<GoogleCalendarEvent[]> res.data.items);
+          const items: GoogleCalendarEvent = res.data.items.map((item: GoogleCalendarEventJson) => GoogleCalendarEvent.fromJson(item));
+          resolve(items);
         }
       });
     });

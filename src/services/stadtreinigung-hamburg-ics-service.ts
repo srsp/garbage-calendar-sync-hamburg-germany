@@ -1,26 +1,26 @@
 import { GoogleCalendarEvent } from '../models';
-import request = require('request-promise-native');
-const ical = require('ical.js');
-import { Moment } from 'moment';
-import moment = require('moment');
 import * as _ from 'lodash';
+import request = require('request-promise-native');
+import moment = require('moment');
+
+const ical = require('ical.js');
+
 
 export class StadtreinigungHamburgIcsService {
   private icsUrl: string;
   private hnId: string;
   private asId: string;
 
-  constructor(private street: string, private houseNumber: string, private disableColors: boolean, private calendarEntryWholeDay: boolean) {
+  constructor(private street: string, private houseNumber: string, private disableColors: boolean, private wholeDay: boolean) {
   }
 
   public async getUpcomingEvents(): Promise<GoogleCalendarEvent[]> {
     const ics: string = await this.downloadIcs();
     const eventsFromIcs: GoogleCalendarEvent[] = this.parseEvents(ics);
-    const tomorrow = moment().add(24, 'h');
 
     return _.filter(
       eventsFromIcs,
-      (event: GoogleCalendarEvent) => moment(event.start.dateTime).isAfter(tomorrow) || moment(event.start.date).isAfter(tomorrow)
+      (event: GoogleCalendarEvent) => moment(event.getStart()).isAfter()
     );
   }
 
@@ -83,49 +83,52 @@ export class StadtreinigungHamburgIcsService {
     let colorId: string;
 
     if (!this.disableColors) {
-        switch (title) {
-            case 'Wertstofftonne':
-                colorId = '5'; //yellow
-                break;
-            case 'Papiertonne':
-                colorId = '7'; //blue
-                break;
-            case 'Restmülltonne':
-                colorId = '8'; //graphit
-                break;
-            case 'Biotonne':
-                colorId = '2'; //green
-                break;
-            default:
-                colorId = undefined; //default color
-                break;
-        }
+      switch (title) {
+        case 'Wertstofftonne':
+          colorId = '5'; //yellow
+          break;
+        case 'Papiertonne':
+          colorId = '7'; //blue
+          break;
+        case 'Restmülltonne':
+          colorId = '8'; //graphit
+          break;
+        case 'Biotonne':
+          colorId = '2'; //green
+          break;
+        default:
+          colorId = undefined; //default color
+          break;
+      }
     }
 
-    const startDate: Moment = this.wholeDay ? moment(data[7][3]).add(12, 'hours') : undefined;
-    const startDateTime: Moment = this.wholeDay ? undefined : moment(data[7][3]).add(12, 'hours');
-    const endDate: Moment = this.wholeDay ? moment(startDate).add(2, 'hours') : undefined;
-    const endDateTime: Moment = this.wholeDay ? undefined : moment(startDate).add(2, 'hours');
+    const event: GoogleCalendarEvent = new GoogleCalendarEvent();
+    if (this.wholeDay) {
+      event.start = {
+        date: moment(data[7][3]).add(12, 'hours').format('YYYY-MM-DD')
+      };
+      event.end = {
+        date: moment(data[7][3]).add(14, 'hours').format('YYYY-MM-DD')
+      };
+    } else {
+      event.start = {
+        dateTime: moment(data[7][3]).add(12, 'hours').toDate()
+      };
+      event.end = {
+        dateTime: moment(data[7][3]).add(14, 'hours').toDate()
+      };
+    }
 
-    return {
-      kind: 'calendar#event',
-      created: new Date(),
-      updated: new Date(),
-      colorId: colorId,
-      summary: title,
-      description: data[4][3],
-      start: {
-          date: startDate.format('YYYY-MM-DD'),
-          dateTime: startDateTime == null ? undefined : startDateTime.toDate()
-      },
-      end: {
-          date: endDate.format('YYYY-MM-DD'),
-          dateTime: endDateTime == null ? undefined : endDateTime.toDate()
-      },
-      reminders: {
-        useDefault: true
-      }
+    event.kind = 'calendar#event';
+    event.created = new Date();
+    event.updated = new Date();
+    event.colorId = colorId;
+    event.summary = title;
+    event.description = data[4][3];
+    event.reminders = {
+      useDefault: true
     };
 
+    return event;
   }
 }

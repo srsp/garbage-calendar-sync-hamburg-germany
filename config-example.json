@@ -5,6 +5,6 @@
   "privateKey": "-----BEGIN PRIVATE KEY-----\nabcdefghijklmnopqrstuvwxyz1234567890==\n-----END PRIVATE KEY-----\n",
   "clientEmail": "servicename@projectname.iam.gserviceaccount.com",
   "calendarId": "abcdefghijklmnopqrstuvxyz@group.calendar.google.com",
-  "calendarEntryWholeDay": false
+  "calendarEntryWholeDay": false,
   "disableColors": false
 }
