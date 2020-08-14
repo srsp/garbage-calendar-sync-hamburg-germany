@@ -8,6 +8,7 @@ sync:
         - docker
     image: $IMAGE
     script:
+        - cd /usr/src/app
         - cp $CONFIG_JSON config.json
         - npm start
     
