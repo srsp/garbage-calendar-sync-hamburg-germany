@@ -5,12 +5,12 @@ You can also subscribe to an email reminder service as well as download all date
 
 However, both options aren't perfect:
 * The email service spams your inbox.
-* The ICS-Calendar file opiton requires a manual download at least every 6 months and doesn't capture short-term changes.
+* The ICS-Calendar file option requires a manual download at least every 6 months and doesn't capture short-term changes.
 * Also, all events are dated to the day before collection at 17:00 which is the reminder date - not the actual collection date.
 
 ## What does this service do?
 
-* It regularily checks the collection events from the Stadtreinigung Hamburg page at your address.
+* It regularly checks the collection events from the Stadtreinigung Hamburg page at your address.
 * It changes the date to the actual collection date.
 * You can configure any Google notification.
 * It sanitizes the event title and description.
@@ -22,7 +22,7 @@ However, both options aren't perfect:
 ## Setup
 
 ### Create a config file
-1. copy the `config-example.json` to `config.json`.
+* Copy the `config-example.json` to `config.json`.
 
 ### Create Google Project Credentials
 You need a technical user that you will give access to your private calendar.  
@@ -43,7 +43,7 @@ You need a technical user that you will give access to your private calendar.
 7. Choose if you want to have whole day events or 2 hour events by setting the `calendarEntryWholeDay` in the config.
 
 ### Configure your notifications
-1. Under notifications, add your preferred notification method and time. I use "popup" and "13h before".
+* Under notifications, add your preferred notification method and time. I use "popup" and "13h before".
 Which is 17:00 the day before as notification on my mobile phone.
 
 ### Configure your address
@@ -55,12 +55,13 @@ This has to match the data from Stadtreinigung Hamburg. You can verify it
 * *Sync Frequency* Stadtreinigung Hamburg states that they'll update the collection events every 4 weeks.
 I suggest synchronizing the the garbage calendar at least once a week. My cron expression is:
 `"0 0 0 * * Mon"` which is every Monday at 00:00. You can find more information on cron scheduling at [here](https://crontab.guru/).
+If you don't want to sync at all, set `enableCron` to `false`. This may be useful if you want to use an external cron daemon.
 * *Colors* You can disable the different colors for each garbage collection event by setting `disableColors` to `true`.
 Events will then have the default calendar color.
 
 ## Run
 
 * Download and install Docker
-* run `docker build -t garbage_calendar_service .`
-* run `docker run garbage_calendar_service`
-* first sync will start directly
+* Run `docker build -t garbage_calendar_service .`
+* Run `docker run garbage_calendar_service`
+* First sync will start directly
